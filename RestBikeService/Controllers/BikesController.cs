@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using BikeUnitTest1;
@@ -22,8 +23,8 @@ namespace RestBikeService.Controllers
         };
 
 
-            // GET: api/<BikesController>
-          [HttpGet]  
+        // GET: api/<BikesController>
+        [HttpGet]
         public IEnumerable<Bike> Get()
         {
             return bikeList;
@@ -33,7 +34,7 @@ namespace RestBikeService.Controllers
         [HttpGet("{id}")]
         public Bike Get(int id)
         {
-            return bikeList.Find(bike=> bike.Id == id);
+            return bikeList.Find(bike => bike.Id == id);
         }
 
         // POST api/<BikesController>
@@ -41,23 +42,34 @@ namespace RestBikeService.Controllers
         [Route("{id}")]
         public void Post([FromBody] Bike value)
         {
-            
 
+            bikeList.Add(value);
         }
 
         // PUT api/<BikesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        [Route("{id}")]
+        public void Put(int id, [FromBody] Bike value)
         {
-            
-            
+            Bike bike = Get(id);
+            if (bike != null)
+            {
+                bike.Id = value.Id;
+                bike.Color = value.Color;
+                bike.Gear = value.Gear;
+                bike.Price = value.Price;
+
+            }
+
         }
 
         // DELETE api/<BikesController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public void Delete(int id)
         {
-
+            Bike bike = Get(id);
+            bikeList.Remove(bike);
         }
     }
 }
